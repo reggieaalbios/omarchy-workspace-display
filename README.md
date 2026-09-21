@@ -20,6 +20,31 @@ omarchy plugin disable io.github.reggieaalbios.workspace-display
 omarchy plugin remove io.github.reggieaalbios.workspace-display
 ```
 
+## Controls
+
+- Left-click a workspace to switch to it.
+- Right-click a workspace to open its display editor.
+- Click the scratchpad indicator to toggle the scratchpad.
+
+## Optional keybindings
+
+The plugin does not change Hyprland bindings when it is installed. To open the
+editor for workspaces 1 through 10 with `SUPER + CTRL + ALT + 1…0`, add the
+following to `~/.config/hypr/bindings.lua`:
+
+```lua
+-- Warning: these bindings replace any existing SUPER + CTRL + ALT + 1…0 bindings.
+for workspace = 1, 10 do
+  local key = "code:" .. tostring(workspace + 9)
+  hl.unbind("SUPER + CTRL + ALT + " .. key)
+  o.bind("SUPER + CTRL + ALT + " .. key,
+    "Workspace " .. workspace .. " display settings",
+    "omarchy-shell io.github.reggieaalbios.workspace-display.settings picker " .. workspace)
+end
+```
+
+Run `hyprctl reload` after changing your bindings.
+
 ## Data and attribution
 
 Workspace presentation metadata is stored in
