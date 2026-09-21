@@ -6,6 +6,8 @@ with app icons, names, colours, and a compact scratchpad indicator.
 It targets Omarchy Quattro with Hyprland and Quickshell. It is not a workspace
 creation or layout manager.
 
+![Workspace Display style editor](preview.png)
+
 ## Install
 
 ```bash
