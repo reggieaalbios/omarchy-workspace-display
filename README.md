@@ -1,8 +1,7 @@
 # Workspace Display
 
-Workspace Display is a personal Omarchy bar widget shared as-is. It displays
-numeric workspaces with optional app icons, names, and colours, plus a compact
-scratchpad indicator.
+Workspace Display enhances Omarchy's default workspace styling and display
+with optional app icons, names, colours, and a compact scratchpad indicator.
 
 It targets Omarchy Quattro with Hyprland and Quickshell. It is not a workspace
 creation or layout manager.
