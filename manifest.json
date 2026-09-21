@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.reggieaalbios.workspace-display",
+  "name": "Workspace Display",
+  "version": "0.1.0",
+  "author": "Reggie Al-Bios",
+  "license": "MIT",
+  "description": "A local per-workspace presentation manager derived from Decent Workspaces",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "Workspaces.qml"},
+  "barWidget": {
+    "displayName": "Workspace Display",
+    "description": "Numeric workspaces with sparse presentation settings",
+    "category": "Compositor",
+    "allowMultiple": false,
+    "defaultSection": "left"
+  }
+}
