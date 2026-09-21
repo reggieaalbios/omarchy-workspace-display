@@ -1,7 +1,7 @@
 # Workspace Display
 
 Workspace Display enhances Omarchy's default workspace styling and display
-with optional app icons, names, colours, and a compact scratchpad indicator.
+with app icons, names, colours, and a compact scratchpad indicator.
 
 It targets Omarchy Quattro with Hyprland and Quickshell. It is not a workspace
 creation or layout manager.
@@ -26,7 +26,7 @@ omarchy plugin remove io.github.reggieaalbios.workspace-display
 - Right-click a workspace to open its display editor.
 - Click the scratchpad indicator to toggle the scratchpad.
 
-## Optional keybindings
+## Keybindings
 
 The plugin does not change Hyprland bindings when it is installed. To open the
 editor for workspaces 1 through 10 with `SUPER + CTRL + ALT + 1…0`, add the
