@@ -354,6 +354,7 @@ test('workspace editor uses the native panel cursor model across rows and column
 test('workspace name input stays quiet until keyboard or text focus reaches it', () => {
   const row = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
   assert.match(row, /id: nameFrame[\s\S]*height: Style\.space\(32\)/)
+  assert.match(row, /id: swatchFrame[\s\S]*width: nameFrame\.height[\s\S]*height: nameFrame\.height/)
   assert.match(row, /id: nameField[\s\S]*hasCursor: root\.cursorActive && root\.focusSection === "name" && root\.cursorColumn === 0 && !activeFocus/)
   assert.match(row, /id: nameField[\s\S]*borderSpec: \(nameField\.activeFocus \|\| nameField\.hasCursor\)[\s\S]*Border\.none\(\)/)
 })

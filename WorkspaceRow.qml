@@ -181,8 +181,9 @@ Column {
     }
     CursorSurface {
       id: swatchFrame
-      width: Style.space(24)
-      height: width
+      // Keep the swatch square, but align its full height with the name field.
+      width: nameFrame.height
+      height: nameFrame.height
       anchors.verticalCenter: parent.verticalCenter
       hasCursor: root.cursorActive && root.focusSection === "name" && root.cursorColumn === 1
       foreground: root.host.foreground
