@@ -847,9 +847,20 @@ BarWidget {
     PanelKeyCatcher {
       id: keyCatcher
       anchors.fill: parent
-      blocked: (root.editorPage === "layout" && layoutEditor.dropdownOpen)
-        || (root.editorPage === "workspace" && workspaceEditor.dropdownOpen)
-      onCloseRequested: if (!root.closePicker()) root.close()
+      blocked: root.editorPage === "layout" && layoutEditor.dropdownOpen
+      onMoveRequested: function(dx, dy) {
+        if (root.editorPage === "workspace" && workspaceEditor.dropdownOpen && dy !== 0)
+          workspaceEditor.moveDropdownCursor(dy)
+      }
+      onActivateRequested: {
+        if (root.editorPage === "workspace" && workspaceEditor.dropdownOpen)
+          workspaceEditor.activateDropdownCursor()
+      }
+      onCloseRequested: {
+        if (root.editorPage === "workspace" && workspaceEditor.dropdownOpen)
+          workspaceEditor.closeDropdown()
+        else if (!root.closePicker()) root.close()
+      }
     }
     Flickable {
       id: workspaceScroller

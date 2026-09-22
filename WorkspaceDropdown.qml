@@ -51,6 +51,15 @@ Item {
   function open() { popup.open() }
   function close() { popup.close() }
   function toggle() { popup.opened ? popup.close() : popup.open() }
+  function moveCursor(delta) {
+    if (!popup.opened || root.options.length === 0) return
+    root.cursorActive = true
+    optionList.currentIndex = Math.max(0, Math.min(root.options.length - 1, optionList.currentIndex + delta))
+    optionList.positionViewAtIndex(optionList.currentIndex, ListView.Contain)
+  }
+  function activateCursor() {
+    if (popup.opened) optionList.selectCurrent()
+  }
 
   signal changed(string value)
   signal hovered(bool isHovered)
@@ -184,17 +193,13 @@ Item {
           Keys.onPressed: function(event) {
             if (event.key === Qt.Key_Escape) { popup.close(); event.accepted = true }
             else if (event.key === Qt.Key_Down || event.text === "j") {
-              root.cursorActive = true
-              optionList.currentIndex = Math.min(root.options.length - 1, optionList.currentIndex + 1)
-              optionList.positionViewAtIndex(optionList.currentIndex, ListView.Contain)
+              root.moveCursor(1)
               event.accepted = true
             } else if (event.key === Qt.Key_Up || event.text === "k") {
-              root.cursorActive = true
-              optionList.currentIndex = Math.max(0, optionList.currentIndex - 1)
-              optionList.positionViewAtIndex(optionList.currentIndex, ListView.Contain)
+              root.moveCursor(-1)
               event.accepted = true
             } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-              optionList.selectCurrent(); event.accepted = true
+              root.activateCursor(); event.accepted = true
             }
           }
           implicitHeight: contentHeight

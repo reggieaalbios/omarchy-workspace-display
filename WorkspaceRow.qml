@@ -17,6 +17,9 @@ Column {
   spacing: Style.space(10)
 
   readonly property Item colorSwatch: swatch
+  function moveDropdownCursor(delta) { autoLaunchDropdown.moveCursor(delta) }
+  function activateDropdownCursor() { autoLaunchDropdown.activateCursor() }
+  function closeDropdown() { autoLaunchDropdown.close() }
   function autoLaunchOptions() {
     var options = [{ value: "", label: "Off" }]
     var templates = root.host.templatesFor(root.targetKey)
