@@ -127,7 +127,7 @@ Column {
       fontFamily: root.host.bar ? root.host.bar.fontFamily : Style.font.family
     }
   }
-  Dropdown {
+  WorkspaceDropdown {
     id: autoLaunchDropdown
     width: parent.width
     showLabel: false

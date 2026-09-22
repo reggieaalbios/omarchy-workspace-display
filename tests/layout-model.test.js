@@ -316,8 +316,15 @@ test('workspace and Scratchpad IPC bindings toggle their exact editor target', (
 test('workspace auto-launch dropdown owns arrow keys while open', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'Workspaces.qml'), 'utf8')
   const row = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
+  const dropdown = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceDropdown.qml'), 'utf8')
   assert.match(row, /readonly property bool dropdownOpen: autoLaunchDropdown\.popupOpen/)
   assert.match(source, /root\.editorPage === "workspace" && workspaceEditor\.dropdownOpen/)
+  assert.match(row, /WorkspaceDropdown \{\s+id: autoLaunchDropdown/)
+  assert.match(dropdown, /property bool cursorActive: false/)
+  assert.match(dropdown, /readonly property bool hasCursor: root\.cursorActive && index === optionList\.currentIndex/)
+  assert.match(dropdown, /Border\.controlSpec\(hasCursor \? "focus" : "normal"/)
+  assert.match(dropdown, /visible: parent\.hasCursor/)
+  assert.match(dropdown, /visible: parent\.isSelected/)
 })
 
 test('launch layout rows use two-line content with centered icon actions', () => {
@@ -341,7 +348,7 @@ test('target auto-launch uses the themed dropdown and persists changes immediate
   assert.match(source, /Column \{\s+width: parent\.width\s+spacing: Style\.space\(6\)\s+Row \{[\s\S]*text: "LAUNCH LAYOUTS"[\s\S]*text: "AUTO-LAUNCH AT LOGIN"/)
   assert.match(source, /required property string targetKey/)
   assert.match(source, /function autoLaunchOptions\(\) \{[\s\S]*\{ value: "", label: "Off" \}[\s\S]*templatesFor\(root\.targetKey\)/)
-  assert.match(source, /Dropdown \{[\s\S]*id: autoLaunchDropdown[\s\S]*value: root\.host\.autoLaunchTemplateIdFor\(root\.targetKey\)[\s\S]*options: root\.autoLaunchOptions\(\)/)
+  assert.match(source, /WorkspaceDropdown \{[\s\S]*id: autoLaunchDropdown[\s\S]*value: root\.host\.autoLaunchTemplateIdFor\(root\.targetKey\)[\s\S]*options: root\.autoLaunchOptions\(\)/)
   assert.match(source, /onChanged: function\(templateId\) \{\s*root\.host\.setAutoLaunchTemplateId\(root\.targetKey, templateId\)\s*\}/)
 
   const heading = source.indexOf('text: "AUTO-LAUNCH AT LOGIN"')
