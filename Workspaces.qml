@@ -684,6 +684,15 @@ BarWidget {
     root.menuAnchor = anchor || root
     root.editorOpen = true
   }
+  function toggleEditorFor(key, anchor) {
+    key = String(key)
+    if (!root.validTarget(key)) return
+    if (root.editorOpen && root.editedTargetKey === key) {
+      root.close()
+      return
+    }
+    root.openEditor(key, anchor)
+  }
   function open() { root.openEditor(root.validId(root.activeId) ? String(root.activeId) : "1", root) }
   function close() { root.editorPickerOpen = false; root.editorOpen = false; root.editorPage = "workspace" }
   function toggle() { root.editorOpen ? root.close() : root.open() }
@@ -725,8 +734,8 @@ BarWidget {
     function open(): void { root.open() }
     function close(): void { root.close() }
     function toggle(): void { root.toggle() }
-    function workspace(id: int): void { root.openEditor(String(id), root) }
-    function scratchpad(): void { root.openEditor(root.scratchpadKey, root) }
+    function workspace(id: int): void { root.toggleEditorFor(String(id), root) }
+    function scratchpad(): void { root.toggleEditorFor(root.scratchpadKey, root) }
     function picker(id: int): void { root.openPicker(String(id)) }
     function layouts(id: int): void { root.openEditor(String(id), root); root.openTemplateEditor(String(id), "") }
     function launch(id: int, templateId: string): void { root.launchTemplate(String(id), templateId) }

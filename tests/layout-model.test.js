@@ -305,6 +305,14 @@ test('workspace panel stays compact outside the layout editor', () => {
   assert.match(selector, /width: \(root\.width - root\.spacing \* 2\) \/ 3/)
 })
 
+test('workspace and Scratchpad IPC bindings toggle their exact editor target', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'Workspaces.qml'), 'utf8')
+  assert.match(source, /function toggleEditorFor\(key, anchor\)/)
+  assert.match(source, /root\.editorOpen && root\.editedTargetKey === key/)
+  assert.match(source, /function workspace\(id: int\): void \{ root\.toggleEditorFor\(String\(id\), root\) \}/)
+  assert.match(source, /function scratchpad\(\): void \{ root\.toggleEditorFor\(root\.scratchpadKey, root\) \}/)
+})
+
 test('launch layout rows use two-line content with centered icon actions', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
   assert.match(source, /id: layoutIcon[\s\S]*anchors\.verticalCenter: parent\.verticalCenter/)
