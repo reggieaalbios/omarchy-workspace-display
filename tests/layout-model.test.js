@@ -301,7 +301,7 @@ test('workspace panel stays compact outside the layout editor', () => {
   assert.match(source, /root\.editorPage === "layout" \? 900 : 348/)
   assert.match(source, /root\.editorPage === "layout" \? 760 : 560/)
   assert.match(source, /function launch\(id: int, templateId: string\): void \{ root\.launchTemplate\(String\(id\), templateId\) \}/)
-  assert.match(row, /StyleSelector \{\s+width: parent\.width/)
+  assert.match(row, /StyleSelector \{[\s\S]*id: styleSelector[\s\S]*width: parent\.width/)
   assert.match(selector, /width: \(root\.width - root\.spacing \* 2\) \/ 3/)
 })
 
@@ -330,6 +330,32 @@ test('workspace auto-launch dropdown owns arrow keys while open', () => {
   assert.match(dropdown, /Border\.controlSpec\(hasCursor \? "focus" : "normal"/)
   assert.match(dropdown, /visible: parent\.hasCursor/)
   assert.match(dropdown, /visible: parent\.isSelected/)
+})
+
+test('workspace editor uses the native panel cursor model across rows and columns', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'Workspaces.qml'), 'utf8')
+  const row = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
+  const selector = fs.readFileSync(path.join(__dirname, '..', 'StyleSelector.qml'), 'utf8')
+  assert.match(row, /property bool cursorActive: false/)
+  assert.match(row, /property string focusSection: "style"/)
+  assert.match(row, /function movePanelCursor\(dx, dy\)/)
+  assert.match(row, /function activatePanelCursor\(\)/)
+  assert.match(row, /function cursorItem\(\)/)
+  assert.match(row, /hasCursor: root\.cursorActive && root\.focusSection === "new-layout"/)
+  assert.match(row, /hasCursor: root\.cursorActive && root\.focusSection === "auto-launch"/)
+  assert.match(row, /root\.focusSection === "template" && root\.templateCursorIndex === templateCard\.index/)
+  assert.match(selector, /CursorSurface \{/)
+  assert.match(selector, /hasCursor: root\.cursorActive && root\.cursorIndex === index/)
+  assert.match(source, /workspaceEditor\.movePanelCursor\(dx, dy\)/)
+  assert.match(source, /workspaceEditor\.activatePanelCursor\(\)/)
+  assert.match(source, /onEnsureCursorVisible:/)
+})
+
+test('workspace name input stays quiet until keyboard or text focus reaches it', () => {
+  const row = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
+  assert.match(row, /id: nameFrame[\s\S]*height: Style\.space\(32\)/)
+  assert.match(row, /id: nameField[\s\S]*hasCursor: root\.cursorActive && root\.focusSection === "name" && root\.cursorColumn === 0 && !activeFocus/)
+  assert.match(row, /id: nameField[\s\S]*borderSpec: \(nameField\.activeFocus \|\| nameField\.hasCursor\)[\s\S]*Border\.none\(\)/)
 })
 
 test('launch layout rows use two-line content with centered icon actions', () => {
@@ -366,7 +392,7 @@ test('exactly one selected target preset card can show the AUTO badge', () => {
   assert.equal((source.match(/id: autoBadge\b/g) || []).length, 1)
   assert.equal((source.match(/text: "AUTO"/g) || []).length, 1)
   assert.match(source, /id: autoBadge[\s\S]*visible: root\.host\.autoLaunchTemplateIdFor\(root\.targetKey\) === templateCard\.modelData\.id/)
-  assert.match(source, /Repeater \{\s*model: root\.host\.templatesFor\(root\.targetKey\)/)
+  assert.match(source, /Repeater \{\s*id: templateRepeater\s*model: root\.host\.templatesFor\(root\.targetKey\)/)
 })
 
 test('workspace editor components use target keys so Scratchpad shares the full editor', () => {
@@ -446,10 +472,13 @@ test('desktop and command launcher inputs use the same theme-native height', () 
 
 test('application selectors toggle closed when their trigger is clicked again', () => {
   const dropdown = fs.readFileSync(path.join(__dirname, '..', 'LauncherSearchableDropdown.qml'), 'utf8')
+  const workspaceDropdown = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceDropdown.qml'), 'utf8')
   const node = fs.readFileSync(path.join(__dirname, '..', 'LayoutNode.qml'), 'utf8')
   const scrolling = fs.readFileSync(path.join(__dirname, '..', 'ScrollingLayoutEditor.qml'), 'utf8')
   assert.match(dropdown, /import qs\.Ui/)
   assert.match(dropdown, /closePolicy: QQC\.Popup\.CloseOnEscape \| QQC\.Popup\.CloseOnPressOutsideParent/)
+  assert.match(workspaceDropdown, /import QtQuick\.Controls as QQC/)
+  assert.match(workspaceDropdown, /QQC\.Popup \{[\s\S]*closePolicy: QQC\.Popup\.CloseOnEscape \| QQC\.Popup\.CloseOnPressOutsideParent/)
   assert.match(node, /LauncherSearchableDropdown \{/)
   assert.match(scrolling, /LauncherSearchableDropdown \{/)
 })

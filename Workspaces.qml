@@ -683,6 +683,8 @@ BarWidget {
     root.editorPage = "workspace"
     root.menuAnchor = anchor || root
     root.editorOpen = true
+    editorFocusRetry.restart()
+    Qt.callLater(function() { workspaceEditor.resetCursor() })
   }
   function toggleEditorFor(key, anchor) {
     key = String(key)
@@ -834,6 +836,20 @@ BarWidget {
     function close() { root.close() }
   }
 
+  // IPC/keybinding launches can return focus to the invoking client just after
+  // KeyboardPanel's initial prime. Re-prime once after that handoff, then let
+  // the native component settle back to OnDemand focus as usual.
+  Timer {
+    id: editorFocusRetry
+    interval: 160
+    onTriggered: {
+      if (!root.editorOpen) return
+      editorPanel.focusPrimed = false
+      editorPanel.beginFocusPrime()
+      keyCatcher.forceActiveFocus()
+    }
+  }
+
   KeyboardPanel {
     id: editorPanel
     anchorItem: root.menuAnchor || root
@@ -847,14 +863,17 @@ BarWidget {
     PanelKeyCatcher {
       id: keyCatcher
       anchors.fill: parent
-      blocked: root.editorPage === "layout" && layoutEditor.dropdownOpen
+      blocked: (root.editorPage === "layout" && layoutEditor.dropdownOpen)
+        || (root.editorPage === "workspace" && (workspaceEditor.editingText || root.editorPickerOpen))
       onMoveRequested: function(dx, dy) {
-        if (root.editorPage === "workspace" && workspaceEditor.dropdownOpen && dy !== 0)
-          workspaceEditor.moveDropdownCursor(dy)
+        if (root.editorPage !== "workspace") return
+        if (workspaceEditor.dropdownOpen && dy !== 0) workspaceEditor.moveDropdownCursor(dy)
+        else if (!workspaceEditor.dropdownOpen) workspaceEditor.movePanelCursor(dx, dy)
       }
       onActivateRequested: {
-        if (root.editorPage === "workspace" && workspaceEditor.dropdownOpen)
-          workspaceEditor.activateDropdownCursor()
+        if (root.editorPage !== "workspace") return
+        if (workspaceEditor.dropdownOpen) workspaceEditor.activateDropdownCursor()
+        else workspaceEditor.activatePanelCursor()
       }
       onCloseRequested: {
         if (root.editorPage === "workspace" && workspaceEditor.dropdownOpen)
@@ -878,6 +897,16 @@ BarWidget {
         workspace: root.workspaceForTarget(root.editedTargetKey)
         previewColor: root.editorPreviewColor
         onPickerRequested: root.editorPickerOpen ? root.closePicker() : root.showPicker()
+        onNavigationFocusRequested: Qt.callLater(function() { keyCatcher.forceActiveFocus() })
+        onEnsureCursorVisible: function(item) {
+          if (!item) return
+          var point = item.mapToItem(workspaceEditor, 0, 0)
+          var top = point.y
+          var bottom = top + item.height
+          if (top < workspaceScroller.contentY) workspaceScroller.contentY = Math.max(0, top - Style.space(8))
+          else if (bottom > workspaceScroller.contentY + workspaceScroller.height)
+            workspaceScroller.contentY = Math.min(Math.max(0, workspaceScroller.contentHeight - workspaceScroller.height), bottom - workspaceScroller.height + Style.space(8))
+        }
       }
     }
     AppLayoutEditor {
