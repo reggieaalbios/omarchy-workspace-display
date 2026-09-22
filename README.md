@@ -1,8 +1,9 @@
 # Workspace Display
 
-Workspace Display enhances Omarchy's numeric workspace bar with per-workspace
-names, colours, app glyphs, Scratchpad presentation, saved Dwindle or Scrolling
-layouts, manual workspace app launch, and login auto-launch.
+Workspace Display enhances Omarchy's default workspace plugin with
+per-workspace names, colours, app glyphs, Scratchpad presentation, and
+configured Dwindle or Scrolling launch presets that can be launched manually
+or auto-launched at login.
 
 It targets Omarchy Quattro with Hyprland and Quickshell. Saved layouts create
 an initial arrangement when their applications launch; they do not continuously
