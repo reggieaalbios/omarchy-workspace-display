@@ -847,7 +847,8 @@ BarWidget {
     PanelKeyCatcher {
       id: keyCatcher
       anchors.fill: parent
-      blocked: root.editorPage === "layout" && layoutEditor.dropdownOpen
+      blocked: (root.editorPage === "layout" && layoutEditor.dropdownOpen)
+        || (root.editorPage === "workspace" && workspaceEditor.dropdownOpen)
       onCloseRequested: if (!root.closePicker()) root.close()
     }
     Flickable {

@@ -313,6 +313,13 @@ test('workspace and Scratchpad IPC bindings toggle their exact editor target', (
   assert.match(source, /function scratchpad\(\): void \{ root\.toggleEditorFor\(root\.scratchpadKey, root\) \}/)
 })
 
+test('workspace auto-launch dropdown owns arrow keys while open', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'Workspaces.qml'), 'utf8')
+  const row = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
+  assert.match(row, /readonly property bool dropdownOpen: autoLaunchDropdown\.popupOpen/)
+  assert.match(source, /root\.editorPage === "workspace" && workspaceEditor\.dropdownOpen/)
+})
+
 test('launch layout rows use two-line content with centered icon actions', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
   assert.match(source, /id: layoutIcon[\s\S]*anchors\.verticalCenter: parent\.verticalCenter/)

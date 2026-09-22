@@ -10,6 +10,7 @@ Column {
   required property string targetKey
   required property var workspace
   property string previewColor: host.colorFor(targetKey)
+  readonly property bool dropdownOpen: autoLaunchDropdown.popupOpen
   signal pickerRequested()
   width: parent ? parent.width : Style.space(300)
   height: implicitHeight
