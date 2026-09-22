@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import qs.Commons
+import qs.Ui
 
 // Plugin-local single-select dropdown. It follows Omarchy's themed Dropdown
 // while making the moving keyboard cursor visibly distinct from the saved
