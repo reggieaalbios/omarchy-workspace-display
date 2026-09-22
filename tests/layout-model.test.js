@@ -358,6 +358,12 @@ test('workspace name input stays quiet until keyboard or text focus reaches it',
   assert.match(row, /id: nameField[\s\S]*borderSpec: \(nameField\.activeFocus \|\| nameField\.hasCursor\)[\s\S]*Border\.none\(\)/)
 })
 
+test('colour picker closes when its popup loses focus', () => {
+  const pickerPopup = fs.readFileSync(path.join(__dirname, '..', 'ColourPickerPopup.qml'), 'utf8')
+  assert.match(pickerPopup, /grabFocus: true/)
+  assert.match(pickerPopup, /target: root\._backingWindow[\s\S]*onActiveChanged[\s\S]*root\.open && !root\._backingWindow\.active[\s\S]*root\.close\(\)/)
+})
+
 test('launch layout rows use two-line content with centered icon actions', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'WorkspaceRow.qml'), 'utf8')
   assert.match(source, /id: layoutIcon[\s\S]*anchors\.verticalCenter: parent\.verticalCenter/)

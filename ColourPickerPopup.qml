@@ -22,11 +22,23 @@ PopupWindow {
 
   default property alias contentItem: contentHolder.children
   visible: root.open
+  // This is an interactive popup, not a passive overlay. Give it focus so
+  // clicking back into any other surface creates a reliable dismissal event.
+  grabFocus: true
   color: "transparent"
   implicitWidth: root.contentWidth + root.padding * 2
   implicitHeight: root.contentHeight + root.padding * 2
 
   function close() { root.dismissed() }
+
+  Connections {
+    target: root._backingWindow
+    function onActiveChanged() {
+      // A click outside the picker transfers focus to its owner (or another
+      // window). That is the native equivalent of popup blur and must close it.
+      if (root.open && !root._backingWindow.active) root.close()
+    }
+  }
   function positionInWindow(item, offsetX, offsetY) {
     var x = offsetX
     var y = offsetY
