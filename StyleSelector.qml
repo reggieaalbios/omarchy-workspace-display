@@ -20,7 +20,7 @@ Row {
     ]
     Rectangle {
       required property var modelData
-      width: root.controlWidth
+      width: (root.width - root.spacing * 2) / 3
       implicitWidth: root.controlWidth
       implicitHeight: root.controlHeight
       color: "transparent"
