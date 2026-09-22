@@ -123,19 +123,18 @@ function patterns() {
   return compiled
 }
 
-function resolve(cls, title) {
-  var key = cls + "\u0001" + title
+function resolve(cls, title, initialClass, initialTitle) {
+  var values = [cls, initialClass, title, initialTitle]
+  var key = values.join("\u0001")
   var hit = cache[key]
   if (hit !== undefined) return hit
 
   var set = patterns()
   var icon = fallback
-  for (var i = 0; i < set.length; i++) {
-    if (set[i].re.test(cls)) { icon = set[i].icon; break }
-  }
-  if (icon === fallback) {
-    for (var j = 0; j < set.length; j++) {
-      if (set[j].re.test(title)) { icon = set[j].icon; break }
+  for (var valueIndex = 0; valueIndex < values.length && icon === fallback; valueIndex++) {
+    var value = String(values[valueIndex] || "")
+    for (var ruleIndex = 0; ruleIndex < set.length; ruleIndex++) {
+      if (set[ruleIndex].re.test(value)) { icon = set[ruleIndex].icon; break }
     }
   }
 
