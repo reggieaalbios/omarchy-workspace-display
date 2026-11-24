@@ -695,7 +695,7 @@ BarWidget {
     }
     root.openEditor(key, anchor)
   }
-  function open() { root.openEditor(root.validId(root.activeId) ? String(root.activeId) : "1", root) }
+  function open() { root.openEditor(root.scratchpadOpen ? root.scratchpadKey : (root.validId(root.activeId) ? String(root.activeId) : "1"), root) }
   function close() { root.editorPickerOpen = false; root.editorOpen = false; root.editorPage = "workspace" }
   function toggle() { root.editorOpen ? root.close() : root.open() }
   function openPicker(id) {
@@ -749,8 +749,10 @@ BarWidget {
     id: strip
     anchors.left: parent.left; anchors.verticalCenter: root.vertical ? undefined : parent.verticalCenter
     implicitWidth: row.implicitWidth + Style.spaceReal(8); implicitHeight: row.implicitHeight + Style.spaceReal(8)
+    width: implicitWidth; height: implicitHeight
     GridLayout {
       id: row; anchors.centerIn: parent
+      width: implicitWidth; height: implicitHeight
       columns: root.vertical ? 1 : root.visibleIds.length + (root.scratchpadVisible ? 1 : 0)
       columnSpacing: Style.spaceReal(4)
       rowSpacing: Style.spaceReal(4)
@@ -802,7 +804,7 @@ BarWidget {
           spacing: Style.spaceReal(3)
           Text {
             text: scratchpad.scratchpadStyle === "workspace-name" ? root.displayNameFor(root.scratchpadKey) : root.targetFallbackLabel(root.scratchpadKey)
-            visible: scratchpad.scratchpadStyle !== "app-icon" && text !== ""
+            visible: text !== ""
             color: scratchpad.scratchpadColor
             font.family: root.bar ? root.bar.fontFamily : Style.font.family
             font.pixelSize: Style.font.body
@@ -821,8 +823,12 @@ BarWidget {
         }
         MouseArea {
           anchors.fill: parent
+          acceptedButtons: Qt.LeftButton | Qt.RightButton
           cursorShape: Qt.PointingHandCursor
-          onClicked: root.toggleScratchpad()
+          onClicked: function(mouse) {
+            if (mouse.button === Qt.RightButton) root.openEditor(root.scratchpadKey, scratchpad)
+            else root.toggleScratchpad()
+          }
         }
       }
     }
